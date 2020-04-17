@@ -13,9 +13,9 @@ https://bdd-data.berkeley.edu/
 |Auto       |![input]   | (1280,720)    |![Auto]        |(640,360)  |
 
 
-[input] = /results/input.png
-[Deeplab] = results/segmented.png 
-[SegNet] = /results/segmented_by_segnet.png
-[SegResNet] = /results/segmented_by_segresnet.png
-[Auto] = /results/reconstructed.png
+[input]: /results/input.png
+[Deeplab]: results/segmented.png 
+[SegNet]: /results/segmented_by_segnet.png
+[SegResNet]: /results/segmented_by_segresnet.png
+[Auto]: /results/reconstructed.png
 
