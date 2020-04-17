@@ -1,5 +1,6 @@
 import numpy as np
 from collections import namedtuple
+import matplotlib.pyplot as plt
 
 # a label and all meta information
 # Code inspired by Cityscapes https://github.com/mcordts/cityscapesScripts
@@ -102,15 +103,16 @@ categories = {"void": [(0, 0, 0), (111, 74, 0), (81, 0, 81)],
               }
 
 SEG_LABELS_LIST = [
-    {"id": -1,  "name": "void",   "rgb_values": [0, 0,    0]},
-    {"id": 0,  "name": "flat",      "rgb_values": [0,   128,  0]},
-    {"id": 1,  "name": "construction",       "rgb_values": [128, 128,  0]},
-    {"id": 2,  "name": "object",        "rgb_values": [0,   0,    128]},
-    {"id": 3,  "name": "nature",      "rgb_values": [128, 0,    128]},
-    {"id": 4,  "name": "sky",      "rgb_values": [0,   128,  128]},
-    {"id": 5,  "name": "human",        "rgb_values": [128, 128,  128]},
-    {"id": 6,  "name": "vehicle",   "rgb_values": [64,  0,    0]}]
-    
+    {"id": -1, "name": "void", "rgb_values": [0, 0, 0]},
+    {"id": 0, "name": "flat", "rgb_values": [0, 128, 0]},
+    {"id": 1, "name": "construction", "rgb_values": [128, 128, 0]},
+    {"id": 2, "name": "object", "rgb_values": [0, 0, 128]},
+    {"id": 3, "name": "nature", "rgb_values": [128, 0, 128]},
+    {"id": 4, "name": "sky", "rgb_values": [0, 128, 128]},
+    {"id": 5, "name": "human", "rgb_values": [128, 128, 128]},
+    {"id": 6, "name": "vehicle", "rgb_values": [64, 0, 0]}]
+
+
 def label_img_to_rgb(label_img):
     label_img = np.squeeze(label_img)
     labels = np.unique(label_img)
@@ -118,13 +120,14 @@ def label_img_to_rgb(label_img):
     print(label_img.shape)
     label_img_rgb = np.array([label_img,
                               label_img,
-                              label_img]).transpose(1,2,0)
+                              label_img]).transpose(1, 2, 0)
     for l in label_infos:
         mask = label_img == l['id']
         label_img_rgb[mask] = l['rgb_values']
-    
+
     return label_img_rgb.astype(np.uint8)
-    
+
+
 def create_gt(category, class_number, image):
     """
     gt = ground truth
@@ -140,46 +143,56 @@ def create_gt(category, class_number, image):
         try:
             gt_next = np.all(image == color, axis=2)
             gt = np.logical_or(gt, gt_next)
-        except:
+        except Exception :
             gt = np.logical_or(gt, gt_init)
-    #print("in helper max target: {}, min target {} for class {}".format(np.max(gt*class_number), np.min(gt * class_number), class_number))
-    return gt* class_number
+    return gt * class_number
 
 
 def image2label(seg_image):
     target_shape = (seg_image.shape[0], seg_image.shape[1])
-    gt_0 = create_gt("void",1 , seg_image)
-    gt_1 = create_gt("flat",2, seg_image)
-    gt_2 = create_gt("construction",3, seg_image)
-    gt_3 = create_gt("object",4, seg_image)
-    gt_4 = create_gt("nature",5, seg_image)
-    gt_5 = create_gt("sky",6, seg_image)
-    gt_6 = create_gt("human",7, seg_image)
-    gt_7 = create_gt("vehicle",8, seg_image)
+    gt_0 = create_gt("void", 1, seg_image)
+    gt_1 = create_gt("flat", 2, seg_image)
+    gt_2 = create_gt("construction", 3, seg_image)
+    gt_3 = create_gt("object", 4, seg_image)
+    gt_4 = create_gt("nature", 5, seg_image)
+    gt_5 = create_gt("sky", 6, seg_image)
+    gt_6 = create_gt("human", 7, seg_image)
+    gt_7 = create_gt("vehicle", 8, seg_image)
     # reshape array for concatenation
-    #gt_0 = gt_0.reshape(*gt_0.shape, 1)
-    #gt_1 = gt_1.reshape(*gt_1.shape, 1)
-    gt_1 = np.add(gt_0,gt_1)
-    
-    #gt_2 = gt_2.reshape(*gt_2.shape, 1)
-    gt_2 = np.add(gt_2,gt_1)
-    
-    #gt_3 = gt_3.reshape(*gt_3.shape, 1)
-    gt_3 = np.add(gt_3,gt_2)
-    
-    #gt_4 = gt_4.reshape(*gt_4.shape, 1)
-    gt_4 = np.add(gt_3,gt_4)
-    
-    #gt_5 = gt_5.reshape(*gt_5.shape, 1)
-    gt_5 = np.add(gt_5,gt_4)
-    
-    #gt_6 = gt_6.reshape(*gt_6.shape, 1)
-    gt_6 = np.add(gt_5,gt_6)
-    
-    #gt_7 = gt_7.reshape(*gt_7.shape, 1)
-    gt_7 = np.add(gt_7,gt_6)
-    
+    # gt_0 = gt_0.reshape(*gt_0.shape, 1)
+    # gt_1 = gt_1.reshape(*gt_1.shape, 1)
+    gt_1 = np.add(gt_0, gt_1)
+
+    # gt_2 = gt_2.reshape(*gt_2.shape, 1)
+    gt_2 = np.add(gt_2, gt_1)
+
+    # gt_3 = gt_3.reshape(*gt_3.shape, 1)
+    gt_3 = np.add(gt_3, gt_2)
+
+    # gt_4 = gt_4.reshape(*gt_4.shape, 1)
+    gt_4 = np.add(gt_3, gt_4)
+
+    # gt_5 = gt_5.reshape(*gt_5.shape, 1)
+    gt_5 = np.add(gt_5, gt_4)
+
+    # gt_6 = gt_6.reshape(*gt_6.shape, 1)
+    gt_6 = np.add(gt_5, gt_6)
+
+    # gt_7 = gt_7.reshape(*gt_7.shape, 1)
+    gt_7 = np.add(gt_7, gt_6)
+
     gt_image = gt_7.reshape(target_shape)
     gt_image = np.subtract(gt_image, 1)
     gt_image[gt_image >= 8] = -1
     return np.array(gt_image)
+
+
+def visualize_data(dataset):
+    rgb = dataset[0][0]
+    label_img = dataset[0][1]
+    fig, (ax1, ax2) = plt.subplots(1, 2)
+    ax1.imshow(rgb.numpy().transpose(1, 2, 0))
+    ax1.set_title("input image")
+    ax2.imshow(label_img_to_rgb(label_img.numpy()))
+    ax2.set_title("target image")
+    plt.show()

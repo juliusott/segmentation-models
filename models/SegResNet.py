@@ -1,10 +1,8 @@
-import torch
-import torchvision
 import torch.nn as nn
 
 F = nn.functional
 
-class SegNet(nn.Module):
+class SegResNet(nn.Module):
     def __init__(self):
         super(SegNet, self).__init__()
         #encoder

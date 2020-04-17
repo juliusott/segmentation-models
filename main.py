@@ -1,42 +1,30 @@
-import torch
-import torch.nn as nn
-from torchvision import transforms
-from segmenation_nn import SegmentationNN
-from data_utils import ValDataSegmentation, TrainDataSegmentation, Normalize
 from torch.utils.data.dataloader import DataLoader
-import torch.optim as optim
-import numpy as np
-import matplotlib.pyplot as plt
-#GLOBALS
+from torchvision import transforms
+
+from data_utils import ValDataSegmentation, TrainDataSegmentation, Normalize
+from models.SegNet import SegNet
+from models.SegResNet import SegResNet
+from models.autoencoder import Autoencoder
+from models.deeplabv3 import DeepLab
+from training import *
+from validation import *
+
+# GLOBALS
 NUM_EPOCHS = 10
-BATCH_SIZE = 1
+BATCH_SIZE = 1  # large Batch size leads to a memory issue
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-transforms = transforms.Compose([Normalize()])
-dataset = TrainDataSegmentation("./images", transform=transforms)
-dataloader = DataLoader(dataset=dataset, batch_size=BATCH_SIZE, shuffle=True)
+# choose model
+models = [DeepLab(), SegResNet(), SegNet(), Autoencoder()]
+model = models[0]  # 0=DeepLab, 1=SegResNet, 2= SegNet, 3=Autoencoder
 
-model = SegmentationNN()
-print([module for module in model.modules()])
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
-test_scores = []
-for eopch in range(NUM_EPOCHS):
-    running_loss = 0.0
-    for i, data in enumerate(dataloader,0):
-        image, label = data
-        optimizer.zero_grad()
+# import dataset
+transform = transforms.Compose([Normalize()])
+train_dataset = TrainDataSegmentation("./images", transform=transform)
+train_dataloader = DataLoader(dataset=train_dataset, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
+val_dataset = ValDataSegmentation("./images", transform=transforms)
+val_dataloader = DataLoader(dataset=val_dataset, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
 
-        output = model(image)["out"]
-        loss = criterion(output, label)
-        loss.backward()
-        optimizer.step()
-        _, preds = torch.max(outputs, 1)
-        targets_mask = targets >= 0
-        test_scores.append(np.mean((preds == targets)[targets_mask].data.cpu().numpy()))
-        running_loss += loss.item()
-
-        if i %100 == 0:
-            print("loss {} and accuracy {} in epoch {}".format(running_loss/i, np.mean(test_scores), i))
-            running_loss = 0.0
-            test_scores = []
+# training
+# set autoencoder flag if necessary!
+train(num_epochs=NUM_EPOCHS, train_dataloader=train_dataloader, model=model, input_path="./trained_models/segresnet.pt")
+validation(val_dataset, val_dataloader, model, BATCH_SIZE, path_to_model="./trained_models/segresnet.pt")

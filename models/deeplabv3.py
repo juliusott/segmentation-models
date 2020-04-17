@@ -1,11 +1,8 @@
-import torch
-import torchvision
 import torch.nn as nn
 from torchvision.models.segmentation import deeplabv3_resnet101
-from torchvision.models import resnet101
 
 
-class SegmentationNN(nn.Module):
+class DeepLab(nn.Module):
 
     def __init__(self):
         super(SegmentationNN, self).__init__()
