@@ -1,2 +1,4 @@
 *.pt
+images/
+trained_models/
 
