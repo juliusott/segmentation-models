@@ -13,7 +13,7 @@ def train(num_epochs, train_dataloader, model, input_path="./trained_models",
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     # loading model
     if os.path.isfile(input_path):
-        model.load_state_dict(torch.load("segresnet_nn.pt"))
+        model.load_state_dict(torch.load(input_path))
         print("loaded model checkpoint")
     model.to(device)
 

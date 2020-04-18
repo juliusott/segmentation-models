@@ -5,12 +5,12 @@ Comparing some Segmentation Models on the BDD100k Dataset for Autonomous Driving
 https://bdd-data.berkeley.edu/
 
 ### Output examples 
-|model      | Input     | Input Size    | Output        | Out Size  |
-|-----      |-------    |-------------- |--------       |------     |
-|Deeplabv3  |![input]   | (1280,720)    |![Deeplab]     |(640,360)  |
-|SegNet     |![input2]  | (1280,720)    |![SegNet]      |(640,360)  |
-|SegResNet  |![input2]  | (1280,720)    |![SegResNet]   |(640,360)  |
-|Auto       |![input]   | (1280,720)    |![Auto]        |(640,360)  |
+|model          | Input     | Input Size    | Output        | Out Size  |
+|-----          |-------    |-------------- |--------       |------     |
+|Deeplabv3      |![input]   | (1280,720)    |![Deeplab]     |(640,360)  |
+|SegNet         |![input2]  | (1280,720)    |![SegNet]      |(640,360)  |
+|SegResNet      |![input2]  | (1280,720)    |![SegResNet]   |(640,360)  |
+|Autoencoder    |![input]   | (1280,720)    |![Auto]        |(640,360)  |
 
 
 [input]: /results/input.png

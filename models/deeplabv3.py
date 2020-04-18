@@ -5,7 +5,7 @@ from torchvision.models.segmentation import deeplabv3_resnet101
 class DeepLab(nn.Module):
 
     def __init__(self):
-        super(SegmentationNN, self).__init__()
+        super(DeepLab, self).__init__()
         # define model
         self.model = deeplabv3_resnet101(num_classes = 7, progress = True)
         self.model.classifier[4] = nn.Conv2d(

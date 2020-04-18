@@ -1,4 +1,7 @@
 *.pt
 images/
 trained_models/
+__pycache__/
+models/__pycache__/
+
 
